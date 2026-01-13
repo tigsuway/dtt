@@ -1,11 +1,11 @@
 # Automated Test Coverage Documentation
 
 ## Overview
-This document outlines the comprehensive test coverage for Drupal using Drupal Test Traits (DTT) framework. The test suite covers content types, custom blocks, module management, and field functionality.
+This document outlines the comprehensive test coverage for Drupal using Drupal Test Traits (DTT) framework. The test suite covers content types, custom blocks, module management, field functionality, and taxonomy.
 
-**Total Test Files:** 24
-**Total Test Methods:** 53
-**Total Assertions:** 250+
+**Total Test Files:** 30
+**Total Test Methods:** 86
+**Total Assertions:** 390+
 **Framework:** Drupal Test Traits (ExistingSiteBase)
 **Test Type:** Functional/Integration Tests
 **Success Rate:** 100% ✅
@@ -29,6 +29,10 @@ This document outlines the comprehensive test coverage for Drupal using Drupal T
 - ✅ Block content management
 - ✅ Image field handling
 - ✅ Custom field validation and storage
+- ✅ Taxonomy vocabulary management
+- ✅ Taxonomy term operations
+- ✅ Term reference fields
+- ✅ Term hierarchy and relationships
 
 ---
 
@@ -39,6 +43,7 @@ This document outlines the comprehensive test coverage for Drupal using Drupal T
 ### 3. Block Content Tests (5 files, 15 tests)
 ### 4. Module Management Tests (1 file, 4 tests)
 ### 5. Field & Image Field Tests (3 files, 14 tests)
+### 6. Taxonomy Tests (6 files, 33 tests)
 
 ---
 
@@ -543,23 +548,221 @@ This document outlines the comprehensive test coverage for Drupal using Drupal T
 
 ---
 
-## Test Categories Matrix
+## Taxonomy Tests
 
-| Category | Article Tests | Page Tests | Block Tests | Module Tests | Field Tests | Total |
-|----------|---------------|------------|-------------|--------------|-------------|-------|
-| View Access (Published) | 1 | 1 | 2 | 0 | 0 | 4 |
-| View Access (Unpublished) | 1 | 1 | 0 | 0 | 0 | 2 |
-| Authenticated Access | 1 | 1 | 0 | 0 | 0 | 2 |
-| Permission-Based Access | 1 | 1 | 2 | 0 | 0 | 4 |
-| Edit Access Control | 2 | 2 | 3 | 0 | 0 | 7 |
-| Delete Access Control | 2 | 2 | 3 | 0 | 0 | 7 |
-| Form Validation | 2 | 2 | 3 | 0 | 6 | 13 |
-| Module Management | 0 | 0 | 0 | 4 | 0 | 4 |
-| Field/Image Testing | 0 | 0 | 0 | 0 | 8 | 8 |
-| Block Management | 0 | 0 | 2 | 0 | 0 | 2 |
-| **Total Test Methods** | **10** | **10** | **15** | **4** | **14** | **53** |
+### 25. TaxonomyVocabularyCreateTest.php
+**Purpose:** Test taxonomy vocabulary creation
+
+**Test Methods:**
+- `testUserCanCreateVocabulary()`
+- `testAnonymousCannotCreateVocabulary()`
+- `testVocabularyRequiresName()`
+- `testVocabularyProgrammaticCreation()`
+
+**Coverage:**
+- Creates vocabularies via UI and programmatically
+- Tests access control (administer taxonomy permission)
+- Validates required name field
+- Verifies vocabulary appears in admin listing
+- Tests machine name and description fields
+
+**Permissions Tested:**
+- `administer taxonomy`
+
+**Form Fields Tested:**
+- `name` (required - vocabulary name)
+- `vid` (vocabulary ID/machine name)
+- `description` (optional)
 
 ---
+
+### 26. TaxonomyVocabularyEditDeleteTest.php
+**Purpose:** Test vocabulary editing and deletion
+
+**Test Methods:**
+- `testUserCanEditVocabulary()`
+- `testAnonymousCannotEditVocabulary()`
+- `testUserCanDeleteVocabulary()`
+- `testAnonymousCannotDeleteVocabulary()`
+
+**Coverage:**
+- Edits vocabulary name and description
+- Verifies changes persist after save
+- Tests delete confirmation workflow
+- Validates access control on edit/delete forms
+- Confirms vocabulary deletion from database
+
+**Permissions Tested:**
+- `administer taxonomy`
+
+**URLs Tested:**
+- `/admin/structure/taxonomy/manage/{vid}` (edit)
+- `/admin/structure/taxonomy/manage/{vid}/delete` (delete)
+
+---
+
+### 27. TaxonomyTermCreateTest.php
+**Purpose:** Test taxonomy term creation
+
+**Test Methods:**
+- `testUserCanCreateTerm()`
+- `testAnonymousCannotCreateTerm()`
+- `testTermRequiresName()`
+- `testTermWithDescription()`
+- `testCreateMultipleTerms()`
+
+**Coverage:**
+- Creates terms via UI and programmatically
+- Tests term descriptions with HTML formatting
+- Creates multiple terms in same vocabulary
+- Validates required name field
+- Verifies terms appear in vocabulary listing
+
+**Permissions Tested:**
+- `administer taxonomy`
+- `create terms in {vocabulary}`
+
+**Form Fields Tested:**
+- `name[0][value]` (required - term name)
+- `description[0][value]` (optional - term description)
+
+**URLs Tested:**
+- `/admin/structure/taxonomy/manage/{vid}/add` (create term)
+- `/admin/structure/taxonomy/manage/{vid}/overview` (term listing)
+
+---
+
+### 28. TaxonomyTermEditDeleteTest.php
+**Purpose:** Test term editing and deletion
+
+**Test Methods:**
+- `testUserCanEditTerm()`
+- `testAnonymousCannotEditTerm()`
+- `testUserWithoutPermissionCannotEditTerm()`
+- `testUserCanDeleteTerm()`
+- `testAnonymousCannotDeleteTerm()`
+
+**Coverage:**
+- Edits term name and description
+- Tests permission-based access control
+- Verifies delete confirmation page
+- Confirms term deletion from database
+- Tests access denied for unauthorized users
+
+**Permissions Tested:**
+- `administer taxonomy`
+- `edit terms in {vocabulary}`
+- `delete terms in {vocabulary}`
+
+---
+
+### 29. TaxonomyTermReferenceTest.php
+**Purpose:** Test term reference fields on content
+
+**Test Methods:**
+- `testArticleWithSingleTag()`
+- `testArticleWithMultipleTags()`
+- `testTermReferenceFieldIsOptional()`
+- `testTermReferencePersistence()`
+- `testTermReferenceViaUI()`
+
+**Coverage:**
+- Creates articles with single and multiple term references
+- Tests optional term reference fields
+- Verifies term references persist across saves
+- Tests term display on article pages
+- Validates autocomplete widget functionality
+
+**Permissions Tested:**
+- `create article content`
+- `access content`
+
+**Field Testing:**
+- `field_tags` - term reference field
+- Single term reference
+- Multiple term references
+- Field empty state (optional)
+- Reference persistence
+
+---
+
+### 30. TaxonomyTermHierarchyTest.php
+**Purpose:** Test hierarchical term relationships
+
+**Test Methods:**
+- `testCreateChildTerm()`
+- `testNestedTermHierarchy()`
+- `testTermHierarchyDisplay()`
+- `testMoveTermInHierarchy()`
+
+**Coverage:**
+- Creates parent-child term relationships
+- Tests 3-level nested hierarchy (grandparent > parent > child)
+- Verifies hierarchy display in admin interface
+- Moves terms between parents
+- Validates parent loading via taxonomy storage
+
+**Hierarchy Features:**
+- Parent term assignment
+- Multi-level nesting
+- loadParents() functionality
+- Hierarchy visualization
+- Parent switching
+
+---
+
+### 31. TaxonomyTermDisplayTest.php
+**Purpose:** Test term display and rendering
+
+**Test Methods:**
+- `testTermDisplaysOnArticle()`
+- `testTermLinkToTermPage()`
+- `testTermPageShowsReferencingContent()`
+- `testTermPageWithNoContent()`
+- `testAnonymousCanViewTermPage()`
+- `testTermRenderingFormat()`
+
+**Coverage:**
+- Verifies terms display on article pages as links
+- Tests navigation from article to term page
+- Validates term pages list all referencing content
+- Tests empty term pages (no content)
+- Confirms anonymous access to term pages
+- Validates HTML rendering and link attributes
+
+**URLs Tested:**
+- `/taxonomy/term/{tid}` - term page
+
+**Display Features:**
+- Term name rendering
+- Clickable links
+- Content listing on term pages
+- Proper HTML markup
+- Link href attributes
+
+---
+
+## Test Categories Matrix
+
+| Category | Article Tests | Page Tests | Block Tests | Module Tests | Field Tests | Taxonomy Tests | Total |
+|----------|---------------|------------|-------------|--------------|-------------|----------------|-------|
+| View Access (Published) | 1 | 1 | 2 | 0 | 0 | 2 | 6 |
+| View Access (Unpublished) | 1 | 1 | 0 | 0 | 0 | 0 | 2 |
+| Authenticated Access | 1 | 1 | 0 | 0 | 0 | 0 | 2 |
+| Permission-Based Access | 1 | 1 | 2 | 0 | 0 | 6 | 10 |
+| Edit Access Control | 2 | 2 | 3 | 0 | 0 | 3 | 10 |
+| Delete Access Control | 2 | 2 | 3 | 0 | 0 | 2 | 9 |
+| Form Validation | 2 | 2 | 3 | 0 | 6 | 2 | 15 |
+| Module Management | 0 | 0 | 0 | 4 | 0 | 0 | 4 |
+| Field/Image Testing | 0 | 0 | 0 | 0 | 8 | 0 | 8 |
+| Block Management | 0 | 0 | 2 | 0 | 0 | 0 | 2 |
+| Taxonomy Operations | 0 | 0 | 0 | 0 | 0 | 9 | 9 |
+| Term References | 0 | 0 | 0 | 0 | 0 | 5 | 5 |
+| Term Hierarchy | 0 | 0 | 0 | 0 | 0 | 4 | 4 |
+| **Total Test Methods** | **10** | **10** | **15** | **4** | **14** | **33** | **86** |
+
+---
+
 
 ## Permissions Coverage
 
@@ -581,6 +784,10 @@ This document outlines the comprehensive test coverage for Drupal using Drupal T
 | `administer blocks` | Administer block configuration | BlockContentFilterTest |
 | `administer modules` | Enable/disable modules | MediaLibraryModuleToggleTest |
 | `access media overview` | Access media library | MediaLibraryModuleToggleTest |
+| `administer taxonomy` | Full taxonomy administration | TaxonomyVocabularyCreateTest, TaxonomyVocabularyEditDeleteTest, TaxonomyTermCreateTest, TaxonomyTermEditDeleteTest, TaxonomyTermHierarchyTest |
+| `create terms in {vocabulary}` | Create terms in specific vocabulary | TaxonomyTermCreateTest |
+| `edit terms in {vocabulary}` | Edit terms in specific vocabulary | TaxonomyTermEditDeleteTest |
+| `delete terms in {vocabulary}` | Delete terms in specific vocabulary | TaxonomyTermEditDeleteTest |
 | `access content` | View published content | Multiple tests |
 
 ---
@@ -589,8 +796,8 @@ This document outlines the comprehensive test coverage for Drupal using Drupal T
 
 | Status Code | Meaning | Test Coverage |
 |-------------|---------|---------------|
-| 200 OK | Successful access | 35+ tests |
-| 403 Forbidden | Access denied | 18+ tests |
+| 200 OK | Successful access | 60+ tests |
+| 403 Forbidden | Access denied | 26+ tests |
 
 ---
 
@@ -654,7 +861,46 @@ $this->drupalGet($node->toUrl('delete-form')->toString());
 $this->drupalGet('/admin/content/block');
 ```
 
-### 6. Assertion Patterns
+### 6. Taxonomy Creation Pattern
+```php
+// Create vocabulary
+$vocabulary = Vocabulary::create([
+  'vid' => 'test_vocab_' . uniqid(),
+  'name' => 'Test Vocabulary',
+  'description' => 'Test vocabulary description',
+]);
+$vocabulary->save();
+
+// Create term
+$term = Term::create([
+  'vid' => $vocab_id,
+  'name' => 'Test Term ' . uniqid(),
+  'description' => [
+    'value' => 'Test description',
+    'format' => 'basic_html',
+  ],
+]);
+$term->save();
+
+// Create term with parent (hierarchy)
+$child = Term::create([
+  'vid' => $vocab_id,
+  'name' => 'Child Term',
+  'parent' => [$parent->id()],
+]);
+$child->save();
+
+// Reference term in content
+$node = $this->createNode([
+  'type' => 'article',
+  'title' => $title,
+  'field_tags' => [
+    ['target_id' => $term->id()],
+  ],
+]);
+```
+
+### 7. Assertion Patterns
 ```php
 // HTTP status
 $this->assertSession()->statusCodeEquals(200);
@@ -672,6 +918,11 @@ $this->assertSession()->elementExists('css', 'img[alt="Alt text"]');
 // Field values
 $this->assertEquals($expected, $node->body->value);
 $this->assertTrue($node->field_image->isEmpty());
+
+// Taxonomy assertions
+$this->assertFalse($node->field_tags->isEmpty());
+$this->assertEquals($term->id(), $node->field_tags->target_id);
+$this->assertArrayHasKey($parent->id(), $parent_ids);
 ```
 
 ---
@@ -694,6 +945,11 @@ cd /var/www/drupal
 **Basic Page Tests Only:**
 ```bash
 ./vendor/bin/phpunit tests/src/ExistingSite/BasicPage*
+```
+
+**Taxonomy Tests Only:**
+```bash
+./vendor/bin/phpunit tests/src/ExistingSite/Taxonomy*
 ```
 
 **Block Content Tests Only:**
@@ -761,14 +1017,13 @@ private function generateTestImage(): string {
 ## Coverage Gaps and Future Enhancements
 
 ### Current Gaps
-- ❌ Taxonomy term association
 - ❌ Revision/moderation workflow testing
 - ❌ Translation/multilingual testing
 - ❌ View mode rendering tests
 - ❌ Comment functionality testing
 - ❌ URL alias/path testing
 - ❌ Menu link field testing
-- ❌ Entity reference field testing
+- ❌ Entity reference field testing (beyond taxonomy)
 - ❌ Date/time field testing
 
 ### Potential Enhancements
@@ -814,6 +1069,7 @@ private function generateTestImage(): string {
 - `media_library` - Media library functionality (for module tests)
 - `file` - File entity management
 - `image` - Image field functionality
+- `taxonomy` - Taxonomy system (vocabularies, terms)
 
 ### Configuration
 Tests require proper PHPUnit configuration (phpunit.xml) with:
@@ -837,6 +1093,8 @@ Tests require proper PHPUnit configuration (phpunit.xml) with:
 - When form validation rules change
 - When modules are added/removed
 - When block types are modified
+- When taxonomy vocabularies are created/removed
+- When term reference fields are added/modified
 
 ### Regular Review
 - Run full test suite before deployments
@@ -858,6 +1116,8 @@ Tests require proper PHPUnit configuration (phpunit.xml) with:
 - Must have user authentication enabled
 - Must have block_content module enabled
 - Must have image field configured on article content type
+- Must have taxonomy module enabled
+- Must have 'tags' vocabulary available (or tests will create it)
 
 ### Server Requirements
 - PHP 8.3+
@@ -899,13 +1159,22 @@ This comprehensive test suite provides strong coverage for core Drupal functiona
 - HTML formatting
 - Accessibility (alt text)
 
+**Taxonomy System:**
+- Vocabulary management (8 tests)
+- Term creation and management (10 tests)
+- Term references in content (5 tests)
+- Hierarchical relationships (4 tests)
+- Term display and navigation (6 tests)
+
 ### Test Health Metrics
-- **Total Tests:** 53
-- **Total Assertions:** 250+
+- **Total Test Files:** 30
+- **Total Test Methods:** 86
+- **Total Assertions:** 390+
 - **Success Rate:** 100% ✅
 - **Code Coverage:** CRUD operations, View, Create, Edit, Delete
 - **User Coverage:** Anonymous, Authenticated, Privileged users
 - **Status Coverage:** Published and Unpublished content
+- **Taxonomy Coverage:** Vocabularies, Terms, References, Hierarchies
 
 ### Security Testing
 - ✅ Access control works correctly for different user roles
@@ -921,10 +1190,13 @@ This comprehensive test suite provides strong coverage for core Drupal functiona
 - ✅ Image uploads and rendering work
 - ✅ Module enable/disable operations function
 - ✅ Block placement and visibility work
+- ✅ Taxonomy vocabularies and terms management
+- ✅ Term references and relationships work
+- ✅ Hierarchical taxonomy structures function
 
 ---
 
-*Last Updated: 2026-01-12*
+*Last Updated: 2026-01-13*
 *Framework: Drupal Test Traits (ExistingSiteBase)*
 *Testing Approach: Functional/Integration Testing*
-*Test Suite Version: 2.0*
+*Test Suite Version: 3.0*
