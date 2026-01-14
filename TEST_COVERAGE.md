@@ -1196,7 +1196,59 @@ This comprehensive test suite provides strong coverage for core Drupal functiona
 
 ---
 
-*Last Updated: 2026-01-13*
+## Complete Test File Statistics
+
+| # | Test File | Test Methods | Assertions | Category |
+|---|-----------|--------------|------------|----------|
+| 1 | ArticleAnonymousViewTest.php | 1 | 4 | Article |
+| 2 | ArticleAuthenticatedUserTest.php | 1 | 3 | Article |
+| 3 | ArticleDeleteAccessTest.php | 2 | 4 | Article |
+| 4 | ArticleEditAccessTest.php | 2 | 3 | Article |
+| 5 | ArticleFieldValidationTest.php | 2 | 6 | Article |
+| 6 | ArticleImageFieldTest.php | 3 | 11 | Article/Field |
+| 7 | ArticleUnpublishedAccessTest.php | 1 | 3 | Article |
+| 8 | ArticleWithPermissionsTest.php | 1 | 3 | Article |
+| 9 | BasicPageAnonymousViewTest.php | 1 | 4 | Basic Page |
+| 10 | BasicPageAuthenticatedUserTest.php | 1 | 3 | Basic Page |
+| 11 | BasicPageDeleteAccessTest.php | 2 | 4 | Basic Page |
+| 12 | BasicPageEditAccessTest.php | 2 | 3 | Basic Page |
+| 13 | BasicPageFieldValidationTest.php | 2 | 6 | Basic Page |
+| 14 | BasicPageUnpublishedAccessTest.php | 1 | 3 | Basic Page |
+| 15 | BasicPageWithPermissionsTest.php | 1 | 3 | Basic Page |
+| 16 | BlockContentAnonymousViewTest.php | 2 | 3 | Block Content |
+| 17 | BlockContentCreateTest.php | 3 | 9 | Block Content |
+| 18 | BlockContentDeleteTest.php | 3 | 6 | Block Content |
+| 19 | BlockContentEditTest.php | 3 | 7 | Block Content |
+| 20 | BlockContentFilterTest.php | 2 | 5 | Block Content |
+| 21 | BlockContentLibraryAccessTest.php | 2 | 3 | Block Content |
+| 22 | CustomFieldTest.php | 6 | 15 | Field |
+| 23 | ImageFieldValidationTest.php | 5 | 14 | Field |
+| 24 | MediaLibraryModuleToggleTest.php | 4 | 16 | Module |
+| 25 | TaxonomyTermCreateTest.php | 5 | 11 | Taxonomy |
+| 26 | TaxonomyTermDisplayTest.php | 6 | 16 | Taxonomy |
+| 27 | TaxonomyTermEditDeleteTest.php | 5 | 12 | Taxonomy |
+| 28 | TaxonomyTermHierarchyTest.php | 4 | 10 | Taxonomy |
+| 29 | TaxonomyTermReferenceTest.php | 5 | 16 | Taxonomy |
+| 30 | TaxonomyVocabularyCreateTest.php | 4 | 7 | Taxonomy |
+| 31 | TaxonomyVocabularyEditDeleteTest.php | 4 | 11 | Taxonomy |
+| **TOTAL** | **31 Test Files** | **86 Test Methods** | **243 Assertions** | **All Categories** |
+
+### Category Breakdown
+
+| Category | Test Files | Test Methods | Assertions |
+|----------|------------|--------------|------------|
+| Article | 8 | 13 | 37 |
+| Basic Page | 7 | 10 | 26 |
+| Block Content | 6 | 15 | 33 |
+| Field | 2 | 11 | 29 |
+| Module | 1 | 4 | 16 |
+| Taxonomy | 7 | 33 | 83 |
+| Article/Field | 1 | 3 | 11 |
+| **TOTAL** | **31** | **86** | **243** |
+
+---
+
+*Last Updated: 2026-01-14*
 *Framework: Drupal Test Traits (ExistingSiteBase)*
 *Testing Approach: Functional/Integration Testing*
 *Test Suite Version: 3.0*
